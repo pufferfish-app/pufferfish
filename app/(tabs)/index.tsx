@@ -6,7 +6,13 @@ export default function HomePage() {
     { id: '1', description: '$100.00 Zelle payment to suspicious account', details: 'View more details' },
   ];
 
-  // State for toggling the collapsible container
+  const recentTransactions = [
+    { id: '1', description: 'Starbucks Coffee', amount: '-$5.99' },
+    { id: '2', description: 'Netflix Subscription', amount: '-$12.99' },
+    { id: '3', description: 'Venmo Payment', amount: '+$50.00' },
+    
+  ];
+
   const [expandedId, setExpandedId] = useState(null);
 
   const toggleExpand = (id) => {
@@ -40,13 +46,38 @@ export default function HomePage() {
               {expandedId === item.id && (
                 <View style={styles.collapsible}>
                   <Text style={styles.collapsibleText}>
-                    Placeholder text for AI summary.
+                    This is placeholder text with additional details about the flagged transaction.
                   </Text>
                 </View>
               )}
             </View>
           )}
         />
+      </View>
+
+      {/* Recent Transactions Section */}
+      <View style={styles.recentTransactions}>
+        <Text style={styles.sectionTitle}>Recent Transactions</Text>
+        {recentTransactions.map((item, index) => (
+          <View
+            key={item.id}
+            style={[
+              styles.transactionCard,
+            ]}
+          >
+            <View style={styles.transactionInfo}>
+              <Text style={styles.transactionDescription}>{item.description}</Text>
+              <Text
+                style={[
+                  styles.transactionAmount,
+                  { color: item.amount.includes('-') ? 'red' : 'green' },
+                ]}
+              >
+                {item.amount}
+              </Text>
+            </View>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -56,6 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundImage: 'linear-gradient(180deg, rgba(177,192,214,1) 51%, rgba(255,244,225,1) 100%)',
+    paddingBottom: 20,
   },
   card: {
     backgroundColor: '#fff',
@@ -108,14 +140,24 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
-    borderColor: '#ECECEC',
-    borderWidth: 1,
+    elevation: 3, 
+  },
+  transactionInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   transactionDescription: {
-    fontSize: 18,
-    color: '#444',
-    marginBottom: 5,
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+    flex: 1,
+  },
+  transactionAmount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    textAlign: 'right',
   },
   transactionDetails: {
     fontSize: 16,
@@ -133,5 +175,8 @@ const styles = StyleSheet.create({
   collapsibleText: {
     fontSize: 14,
     color: '#555',
+  },
+  recentTransactions: {
+    paddingHorizontal: 20,
   },
 });
