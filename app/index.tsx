@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, View, TextInput } from "react-native";
+import { StyleSheet, Image, Platform, View, TextInput, Text } from "react-native";
 import { Button, Card, TextField } from "react-native-ui-lib";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -24,19 +24,25 @@ const LoginPage = () => {
 
   return (
     <View className="bg-white">
-      <TextInput
-        className="rounded-md border-2 border-gray-300 shadow-sm shadow-slate-500 "
-        placeholder="Email"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: "" })}
-      />
-      <TextInput
-        placeholder="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={(text) => setPassword({ value: text, error: "" })}
-      />
-      <Button className="hover:to-indigo-800" onPress={handleLogin}>Login</Button>
+      <Formik initialValues={{ email: '', password: '' }} onSubmit={handleLogin}>
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View>
+            <TextField
+              placeholder="Email"
+              value={values.email}
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+            />
+            <TextField
+              placeholder="Password"
+              value={values.password}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+            />
+            <Button onPress={handleSubmit}><Text>Login</Text></Button>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
