@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
+import axios from 'axios';
 
 export default function ExplorePage() {
-  const transactionData = [5, 10, 8, 15, 7, 12, 20]; // Example transaction data for the last 7 days
-  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const [transactionData, setTransactionData] = useState([]);
+  const [labels, setLabels] = useState([]);
+
+  axios.post('https://pufferfish-xurta.ondigitalocean.app/transactions', {
+    username: 'jdoe',
+    password: 'verysecurepassword',
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      const transactions = response.data;
+  
+      // Extract amounts and dates
+      const amounts = transactions.map(transaction => parseFloat(transaction.amount));
+      const dates = transactions.map(transaction => new Date(transaction.posted * 1000).toLocaleDateString());
+  
+      setTransactionData(amounts);
+      setLabels(dates);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
 
   return (
     <ScrollView style={styles.container}>
@@ -13,7 +36,7 @@ export default function ExplorePage() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Transaction Locations</Text>
         <View style={styles.mapContainer}>
-          map here :)
+          <Text>map here :)</Text>
         </View>
       </View>
 
@@ -29,15 +52,17 @@ export default function ExplorePage() {
               },
             ],
           }}
-          width={Dimensions.get('window').width - 40}
+          width={Dimensions.get('window').width - 40} // from react-native
           height={220}
+          yAxisLabel="$"
           chartConfig={{
             backgroundColor: '#f8f9fa',
             backgroundGradientFrom: '#f8f9fa',
-            backgroundGradientTo: '#ffffff',
+            backgroundGradientTo: '#f8f9fa',
+            decimalPlaces: 2,
             color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
-            strokeWidth: 2, 
+            strokeWidth: 2,
           }}
           bezier
           style={styles.chart}

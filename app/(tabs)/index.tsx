@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 
 export default function HomePage() {
-  const flaggedTransactions = [
-    { id: '1', description: '$100.00 Zelle payment to suspicious account', details: 'View more details' },
-  ];
-
-  const recentTransactions = [
-    { id: '1', description: 'Starbucks Coffee', amount: '-$5.99' },
-    { id: '2', description: 'Netflix Subscription', amount: '-$12.99' },
-    { id: '3', description: 'Venmo Payment', amount: '+$50.00' },
-    
-  ];
-
+  const [balance, setBalance] = useState(null);
+  const [flaggedTransactions, setFlaggedTransactions] = useState([]);
+  const [recentTransactions, setRecentTransactions] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+
+  useEffect(() => {
+    // Fetch data from backend when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://pufferfish-xurta.ondigitalocean.app/frontpage_data', {
+          mode: 'no-cors',
+          method: 'POST',
+          body: JSON.stringify({ username: 'jdoe', password: 'verysecurepassword' }),
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await response.json();
+        setBalance(data.balance || 0); // Set balance, default to 0 if not found
+        setFlaggedTransactions(data.flaggedTransactions || []); 
+        setRecentTransactions(data.recentTransactions || []); 
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures this runs once when the component mounts
 
   const toggleExpand = (id) => {
     setExpandedId((prevId) => (prevId === id ? null : id));
@@ -25,7 +39,7 @@ export default function HomePage() {
       <View style={styles.card}>
         <Text style={styles.greeting}>Welcome back, Ethan</Text>
         <Text style={styles.balance}>
-          Your Balance: <Text style={styles.balanceAmount}>$0.92</Text>
+          Your Balance: <Text style={styles.balanceAmount}>${balance}</Text>
         </Text>
       </View>
 
@@ -58,26 +72,25 @@ export default function HomePage() {
       {/* Recent Transactions Section */}
       <View style={styles.recentTransactions}>
         <Text style={styles.sectionTitle}>Recent Transactions</Text>
-        {recentTransactions.map((item, index) => (
-          <View
-            key={item.id}
-            style={[
-              styles.transactionCard,
-            ]}
-          >
-            <View style={styles.transactionInfo}>
-              <Text style={styles.transactionDescription}>{item.description}</Text>
-              <Text
-                style={[
-                  styles.transactionAmount,
-                  { color: item.amount.includes('-') ? 'red' : 'green' },
-                ]}
-              >
-                {item.amount}
-              </Text>
+        {recentTransactions && recentTransactions.length > 0 ? (
+          recentTransactions.map((item, index) => (
+            <View key={item.id} style={styles.transactionCard}>
+              <View style={styles.transactionInfo}>
+                <Text style={styles.transactionDescription}>{item.description}</Text>
+                <Text
+                  style={[
+                    styles.transactionAmount,
+                    { color: item.amount.includes('-') ? 'red' : 'green' },
+                  ]}
+                >
+                  {item.amount}
+                </Text>
+              </View>
             </View>
-          </View>
-        ))}
+          ))
+        ) : (
+          <Text>No recent transactions available.</Text>
+        )}
       </View>
     </View>
   );
@@ -86,7 +99,7 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundImage: 'linear-gradient(180deg, rgba(177,192,214,1) 51%, rgba(255,244,225,1) 100%)',
+    backgroundColor: '#f9f9f9', // background gradient has been simplified for demonstration
     paddingBottom: 20,
   },
   card: {
@@ -140,7 +153,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, 
+    elevation: 3,
   },
   transactionInfo: {
     flexDirection: 'row',
