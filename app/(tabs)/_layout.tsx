@@ -63,14 +63,13 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6F8', // Match your app's background color
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 15,
-    backgroundColor: '#003366', // Header background color
+    backgroundColor: '#003366',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
