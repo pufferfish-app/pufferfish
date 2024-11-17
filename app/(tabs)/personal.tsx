@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
 
 const apiUrl = "http://pufferfish-xurta.ondigitalocean.app";
 
+const getFriendlyNameFromStorage = async () => {
+  try {
+    const friendly_name = await localStorage.getItem('name');
+    return friendly_name;
+  } catch (e) {
+    console.error('Error getting friendly name:', e);
+  }
+}
+
 export default function PersonalPage() {
-  const userName = "Ethan Gibbs"; 
   const { setIsLogged, username, password } = useAuth();
   const router = useRouter();
 
@@ -59,11 +67,21 @@ export default function PersonalPage() {
     }
   };
 
+  const [friendly_name, setFriendlyName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchName = async () => {
+      const name = await getFriendlyNameFromStorage();
+      setFriendlyName(name ?? '');
+    };
+    fetchName();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <Text style={styles.userName}>{userName}</Text>
+        <Text style={styles.userName}>{friendly_name}</Text>
       </View>
 
       {/* Buttons Section */}
