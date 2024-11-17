@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setPassword("");
       }
       setIsLoggedState(status);
+      restoreAuthState()
     } catch (error) {
       console.error("Error updating auth state:", error);
     }
