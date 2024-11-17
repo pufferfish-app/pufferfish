@@ -38,12 +38,41 @@ const LoginPage = () => {
     }
   };
 
+  const handleCreateAccount = async (values: { email: string; password: string; username: string }) => {
+    const data = {
+      username: values.email,
+      password: values.password,
+      friendly_name: values.username,
+    };
+
+    try {
+      const res = await fetch(`${loginURL}/create_user`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.status === 200) {
+        console.log("Account created successfully");
+        setIsLogged(true);
+        //router.push("/home");
+      } else {
+        console.error("Failed to create account");
+      }
+    } catch (e) {
+      console.error("Error during account creation:", e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back</Text>
       <Text style={styles.subtitle}>Login to your account</Text>
 
-      <Formik initialValues={{ email: "", password: "" }} onSubmit={handleLogin}>
+      <Formik initialValues={{ email: "", password: "", username: "" }} onSubmit={handleLogin}>
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View style={styles.formContainer}>
             <TextInput
@@ -64,6 +93,41 @@ const LoginPage = () => {
               placeholderTextColor="#aaa"
             />
             <Button style={styles.loginButton} onPress={handleSubmit} label="Login" />
+          </View>
+        )}
+      </Formik>
+
+      <Text style={styles.subtitle}>Or create a new account</Text>
+
+      <Formik initialValues={{ email: "", password: "", username: "" }} onSubmit={handleCreateAccount}>
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View style={styles.formContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={values.email}
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry
+              value={values.password}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={values.username}
+              onChangeText={handleChange("username")}
+              onBlur={handleBlur("username")}
+              placeholderTextColor="#aaa"
+            />
+            <Button style={styles.createAccountButton} onPress={handleSubmit} label="Create Account" />
           </View>
         )}
       </Formik>
@@ -105,6 +169,14 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: "#4f46e5",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  createAccountButton: {
+    backgroundColor: "#4caf50",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
