@@ -2,16 +2,54 @@ import React from "react";
 import { StyleSheet, View, Text, TextInput } from "react-native";
 import { Button } from "react-native-ui-lib";
 import { Formik } from "formik";
+import { Redirect } from "expo-router";
+
+const loginURL = "http://pufferfish-xurta.ondigitalocean.app";
 
 const LoginPage = () => {
-  const handleLogin = (values) => {
+  interface LoginValues {
+    email: string;
+    password: string;
+    username: string;
+  }
+
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleLogin = async (values: LoginValues) => {
     console.log("Login Values:", values);
-    // TODO
+    try {
+      const res = await fetch(`${loginURL}/credential_check`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([{email: values.email, password: values.password}]),
+      });
+      if (res.status === 200) {
+        console.log("Login Success");
+        <Redirect href="/(tabs)" />;
+      } else {
+        console.log("Login Failed");
+        setError("Invalid email or password");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+    }
   };
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async (values: LoginValues) => {
     console.log("Create account");
-    // TODO
+    try{
+      const res = await fetch(`${loginURL}/create_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([{email: values.email, password: values.password, username: values.username}]),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -22,7 +60,7 @@ const LoginPage = () => {
 
       {/* Formik Form */}
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", username: "" }}
         onSubmit={handleLogin}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -44,6 +82,15 @@ const LoginPage = () => {
               value={values.password}
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
+              placeholderTextColor="#aaa"
+            />
+            {/* username */}
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={values.username}
+              onChangeText={handleChange("username")}
+              onBlur={handleBlur("username")}
               placeholderTextColor="#aaa"
             />
             {/* Login Button */}
