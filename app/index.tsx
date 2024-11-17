@@ -11,9 +11,9 @@ const LoginPage = () => {
   const { setIsLogged } = useAuth();
   const router = useRouter();
 
-  const handleLogin = async (values: { email: string; password: string }) => {
+  const handleLogin = async (values: { username: string; password: string }) => {
     const data = {
-      username: values.email,
+      username: values.username,
       password: values.password,
     };
 
@@ -31,18 +31,18 @@ const LoginPage = () => {
         setIsLogged(true);
         router.push("/home");
       } else {
-        console.error("Invalid email or password");
+        console.error("Invalid username or password");
       }
     } catch (e) {
       console.error("Error during login:", e);
     }
   };
 
-  const handleCreateAccount = async (values: { email: string; password: string; username: string }) => {
+  const handleCreateAccount = async (values: { username: string; password: string; name: string }) => {
     const data = {
-      username: values.email,
+      username: values.username,
       password: values.password,
-      friendly_name: values.username,
+      friendly_name: values.name,
     };
 
     try {
@@ -58,7 +58,7 @@ const LoginPage = () => {
       if (res.status === 200) {
         console.log("Account created successfully");
         setIsLogged(true);
-        //router.push("/home");
+        router.push("/home");
       } else {
         console.error("Failed to create account");
       }
@@ -77,10 +77,10 @@ const LoginPage = () => {
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Email"
-              value={values.email}
-              onChangeText={handleChange("email")}
-              onBlur={handleBlur("email")}
+              placeholder="Username"
+              value={values.username}
+              onChangeText={handleChange("username")}
+              onBlur={handleBlur("username")}
               placeholderTextColor="#aaa"
             />
             <TextInput
@@ -99,15 +99,15 @@ const LoginPage = () => {
 
       <Text style={styles.subtitle}>Or create a new account</Text>
 
-      <Formik initialValues={{ email: "", password: "", username: "" }} onSubmit={handleCreateAccount}>
+      <Formik initialValues={{ username: "", password: "", name: "" }} onSubmit={handleCreateAccount}>
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Email"
-              value={values.email}
-              onChangeText={handleChange("email")}
-              onBlur={handleBlur("email")}
+              placeholder="Username"
+              value={values.username}
+              onChangeText={handleChange("username")}
+              onBlur={handleBlur("username")}
               placeholderTextColor="#aaa"
             />
             <TextInput
@@ -121,10 +121,10 @@ const LoginPage = () => {
             />
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              value={values.username}
-              onChangeText={handleChange("username")}
-              onBlur={handleBlur("username")}
+              placeholder="Full Name"
+              value={values.name}
+              onChangeText={handleChange("name")}
+              onBlur={handleBlur("name")}
               placeholderTextColor="#aaa"
             />
             <Button style={styles.createAccountButton} onPress={handleSubmit} label="Create Account" />
