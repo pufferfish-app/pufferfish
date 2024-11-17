@@ -1,20 +1,29 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
+
+const apiUrl = "http://pufferfish-xurta.ondigitalocean.app";
 
 export default function PersonalPage() {
   const userName = "Ethan Gibbs"; 
   const { setIsLogged } = useAuth();
   const router = useRouter();
 
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [bankName, setBankName] = useState("");
+
   const handleChangeBank = () => {
-    // TODO
+    setModalVisible(true); // Show the modal
   };
 
   const handleLogout = () => {
     setIsLogged(false);
     router.replace("/");
+  };
+
+  const handleSaveBank = () => {
+    setModalVisible(false); 
   };
 
   return (
@@ -33,6 +42,30 @@ export default function PersonalPage() {
           <Text style={[styles.buttonText, styles.logoutText]}>Logout</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal Section */}
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Change Bank Account</Text>
+            <Text style={styles.modalSubtitle}>https://beta-bridge.simplefin.org/</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter token"
+              value={bankName}
+              onChangeText={setBankName}
+            />
+            <View style={styles.modalButtons}>
+              <Button title="Save" onPress={handleSaveBank} color="#007BFF" />
+              <Button title="Cancel" onPress={() => setModalVisible(false)} color="#FF4D4D" />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -78,4 +111,44 @@ const styles = StyleSheet.create({
   logoutText: {
     color: '#fff',
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#333',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    marginBottom: 15,
+    color: '#333',
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    opacity: 0.5,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
 });
+
