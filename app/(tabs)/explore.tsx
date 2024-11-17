@@ -13,7 +13,7 @@ export default function ExplorePage() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Transaction Locations</Text>
         <View style={styles.mapContainer}>
-          map here :)
+          map here
         </View>
       </View>
 
