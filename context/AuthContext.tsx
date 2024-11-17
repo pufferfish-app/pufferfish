@@ -5,6 +5,8 @@ interface AuthContextProps {
   isLogged: boolean;
   setIsLogged: (status: boolean) => Promise<void>;
   loading: boolean;
+  username: string;
+  password: string;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -12,12 +14,25 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogged, setIsLoggedState] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const restoreAuthState = async () => {
     try {
       const storedStatus = await AsyncStorage.getItem("isLogged");
+      const storedUsername = await AsyncStorage.getItem("username");
+      const storedPassword = await AsyncStorage.getItem("password");
+
       if (storedStatus === "true") {
         setIsLoggedState(true);
+      }
+
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
+
+      if (storedPassword) {
+        setPassword(storedPassword);
       }
     } catch (error) {
       console.error("Error restoring auth state:", error);
@@ -36,6 +51,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await AsyncStorage.setItem("isLogged", "true");
       } else {
         await AsyncStorage.removeItem("isLogged");
+        await AsyncStorage.removeItem("username");
+        await AsyncStorage.removeItem("password");
+        setUsername("");
+        setPassword("");
       }
       setIsLoggedState(status);
     } catch (error) {
@@ -44,7 +63,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ isLogged, setIsLogged, loading }}>
+    <AuthContext.Provider
+      value={{ isLogged, setIsLogged, loading, username, password }}
+    >
       {children}
     </AuthContext.Provider>
   );

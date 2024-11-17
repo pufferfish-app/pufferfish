@@ -7,14 +7,14 @@ const apiUrl = "http://pufferfish-xurta.ondigitalocean.app";
 
 export default function PersonalPage() {
   const userName = "Ethan Gibbs"; 
-  const { setIsLogged } = useAuth();
+  const { setIsLogged, username, password } = useAuth();
   const router = useRouter();
 
   const [isModalVisible, setModalVisible] = useState(false);
-  const [bankName, setBankName] = useState("");
+  const [simplefinToken, setSimplefinToken] = useState("");
 
   const handleChangeBank = () => {
-    setModalVisible(true); // Show the modal
+    setModalVisible(true); 
   };
 
   const handleLogout = () => {
@@ -22,8 +22,41 @@ export default function PersonalPage() {
     router.replace("/");
   };
 
-  const handleSaveBank = () => {
-    setModalVisible(false); 
+  const handleSaveBank = async () => {
+    console.log(username, password)
+    if (!username || !password) {
+      console.error("Username or password missing from AuthContext");
+      return;
+    }
+
+    const payload = {
+      auth_details: {
+        username,
+        password,
+      },
+      simplefin_setup_token: simplefinToken,
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/setup_simplefin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        console.log("Bank setup saved successfully.");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to save bank setup:", errorData);
+      }
+    } catch (error) {
+      console.error("Error saving bank setup:", error);
+    } finally {
+      setModalVisible(false);
+    }
   };
 
   return (
@@ -56,8 +89,8 @@ export default function PersonalPage() {
             <TextInput
               style={styles.input}
               placeholder="Enter token"
-              value={bankName}
-              onChangeText={setBankName}
+              value={simplefinToken}
+              onChangeText={setSimplefinToken}
             />
             <View style={styles.modalButtons}>
               <Button title="Save" onPress={handleSaveBank} color="#007BFF" />
@@ -151,4 +184,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-

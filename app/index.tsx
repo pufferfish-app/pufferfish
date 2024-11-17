@@ -4,12 +4,22 @@ import { Button } from "react-native-ui-lib";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const loginURL = "http://pufferfish-xurta.ondigitalocean.app";
 
 const LoginPage = () => {
   const { setIsLogged } = useAuth();
   const router = useRouter();
+
+  const saveCredentials = async (username: string, password: string) => {
+    try {
+      await AsyncStorage.setItem("username", username);
+      await AsyncStorage.setItem("password", password);
+    } catch (error) {
+      console.error("Error saving credentials:", error);
+    }
+  };
 
   const handleLogin = async (values: { username: string; password: string }) => {
     const data = {
@@ -28,6 +38,7 @@ const LoginPage = () => {
       });
 
       if (res.status === 200) {
+        await saveCredentials(values.username, values.password); // Save credentials
         setIsLogged(true);
         router.push("/home");
       } else {
@@ -57,6 +68,7 @@ const LoginPage = () => {
 
       if (res.status === 200) {
         console.log("Account created successfully");
+        await saveCredentials(values.username, values.password); // Save credentials
         setIsLogged(true);
         router.push("/home");
       } else {
