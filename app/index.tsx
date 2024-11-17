@@ -4,12 +4,24 @@ import { Button } from "react-native-ui-lib";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 const loginURL = "http://pufferfish-xurta.ondigitalocean.app";
 
 const LoginPage = () => {
   const { setIsLogged } = useAuth();
   const router = useRouter();
+
+  const getFriendlyName = async (username: string, password: string) => {
+    try {
+      const res = await axios.post(`${loginURL}/get_friendly_name`, { username, password });
+      if (res.status === 200) {
+        localStorage.setItem("name", res.data);
+      }
+    } catch (e) {
+      console.error("Error getting friendly name:", e);
+    }
+  }
 
   const handleLogin = async (values: { username: string; password: string }) => {
     const data = {
@@ -29,6 +41,7 @@ const LoginPage = () => {
 
       if (res.status === 200) {
         setIsLogged(true);
+        getFriendlyName(values.username, values.password);
         router.push("/home");
       } else {
         console.error("Invalid username or password");
@@ -58,6 +71,7 @@ const LoginPage = () => {
       if (res.status === 200) {
         console.log("Account created successfully");
         setIsLogged(true);
+        localStorage.setItem("name", values.name);
         router.push("/home");
       } else {
         console.error("Failed to create account");

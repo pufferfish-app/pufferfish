@@ -1,5 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+
+const loginURL = "http://pufferfish-xurta.ondigitalocean.app";
+
+const getFriendlyNameFromStorage = async () => {
+  try {
+    const friendly_name = await localStorage.getItem('name');
+    return friendly_name;
+  } catch (e) {
+    console.error('Error getting friendly name:', e);
+  }
+}
 
 export default function HomePage() {
   const flaggedTransactions = [
@@ -19,11 +31,21 @@ export default function HomePage() {
     setExpandedId((prevId) => (prevId === id ? null : id));
   };
 
+  const [friendly_name, setFriendlyName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchName = async () => {
+      const name = await getFriendlyNameFromStorage();
+      setFriendlyName(name ?? null);
+    };
+    fetchName();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Welcome Header Section */}
       <View style={styles.card}>
-        <Text style={styles.greeting}>Welcome back, Ethan</Text>
+        <Text style={styles.greeting}>Welcome back, {friendly_name}</Text>
         <Text style={styles.balance}>
           Your Balance: <Text style={styles.balanceAmount}>$0.92</Text>
         </Text>
