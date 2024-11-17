@@ -4,14 +4,14 @@ import axios from 'axios';
 
 const loginURL = "http://pufferfish-xurta.ondigitalocean.app";
 
-const getFriendlyNameFromStorage = async () => {
+/* const getFriendlyNameFromStorage = async () => {
   try {
     const friendly_name = await localStorage.getItem('name');
     return friendly_name;
   } catch (e) {
     console.error('Error getting friendly name:', e);
   }
-}
+} */
 
 export default function HomePage() {
   const flaggedTransactions = [
@@ -31,7 +31,7 @@ export default function HomePage() {
     setExpandedId((prevId) => (prevId === id ? null : id));
   };
 
-  const [friendly_name, setFriendlyName] = useState<string | null>(null);
+  /* const [friendly_name, setFriendlyName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchName = async () => {
@@ -39,13 +39,13 @@ export default function HomePage() {
       setFriendlyName(name ?? '');
     };
     fetchName();
-  }, []);
+  }, []); */
 
   return (
     <View style={styles.container}>
       {/* Welcome Header Section */}
       <View style={styles.card}>
-        <Text style={styles.greeting}>Welcome back, {friendly_name}</Text>
+        <Text style={styles.greeting}>Welcome back, John Doe</Text>
         <Text style={styles.balance}>
           Your Balance: <Text style={styles.balanceAmount}>$0.92</Text>
         </Text>

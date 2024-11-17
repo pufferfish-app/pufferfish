@@ -5,14 +5,14 @@ import { useRouter } from 'expo-router';
 
 const apiUrl = "http://pufferfish-xurta.ondigitalocean.app";
 
-const getFriendlyNameFromStorage = async () => {
+/* const getFriendlyNameFromStorage = async () => {
   try {
     const friendly_name = await localStorage.getItem('name');
     return friendly_name;
   } catch (e) {
     console.error('Error getting friendly name:', e);
   }
-}
+} */
 
 export default function PersonalPage() {
   const { setIsLogged, username, password } = useAuth();
@@ -67,7 +67,7 @@ export default function PersonalPage() {
     }
   };
 
-  const [friendly_name, setFriendlyName] = useState<string | null>(null);
+  /* const [friendly_name, setFriendlyName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchName = async () => {
@@ -75,13 +75,13 @@ export default function PersonalPage() {
       setFriendlyName(name ?? '');
     };
     fetchName();
-  }, []);
+  }, []); */
 
   return (
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <Text style={styles.userName}>{friendly_name}</Text>
+        <Text style={styles.userName}>John Doe</Text>
       </View>
 
       {/* Buttons Section */}
