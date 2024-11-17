@@ -1,44 +1,133 @@
-import { StyleSheet, Image, Platform, View, TextInput } from "react-native";
-import { Button, Card, TextField } from "react-native-ui-lib";
-
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Formik } from "formik";
-import * as Yup from "yup";
 import React from "react";
+import { StyleSheet, View, Text, TextInput } from "react-native";
+import { Button } from "react-native-ui-lib";
+import { Formik } from "formik";
 
 const LoginPage = () => {
-  const [password, setPassword] = React.useState({ value: "", error: "" });
-  const [email, setEmail] = React.useState({ value: "", error: "" });
-
-  interface LoginFormValues {
-    email: string;
-    password: string;
-  }
-
-  const handleLogin = (values: LoginFormValues): void => {
-    // Handle login logic here
+  const handleLogin = (values) => {
     console.log("Login Values:", values);
+    // TODO
+  };
+
+  const handleCreateAccount = () => {
+    console.log("Navigate to Create Account Page");
+    // TODO
   };
 
   return (
-    <View className="bg-white">
-      <TextInput
-        className="rounded-md border-2 border-gray-300 shadow-sm shadow-slate-500 "
-        placeholder="Email"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: "" })}
+    <View style={styles.container}>
+      {/* Title Section */}
+      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.subtitle}>Login to your account</Text>
+
+      {/* Formik Form */}
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        onSubmit={handleLogin}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View style={styles.formContainer}>
+            {/* Email Field */}
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={values.email}
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              placeholderTextColor="#aaa"
+            />
+            {/* Password Field */}
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry
+              value={values.password}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              placeholderTextColor="#aaa"
+            />
+            {/* Login Button */}
+            <Button
+              style={styles.loginButton}
+              onPress={handleSubmit}
+              label="Login"
+            />
+          </View>
+        )}
+      </Formik>
+
+      {/* Create Account Button */}
+      <Button
+        style={styles.createAccountButton}
+        onPress={handleCreateAccount}
+        label="Create Account"
+        labelStyle={styles.createAccountLabel}
       />
-      <TextInput
-        placeholder="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={(text) => setPassword({ value: text, error: "" })}
-      />
-      <Button className="hover:to-indigo-800" onPress={handleLogin}>Login</Button>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f7f9fc",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 20,
+  },
+  formContainer: {
+    width: "100%",
+  },
+  input: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2, // For Android shadow
+  },
+  loginButton: {
+    backgroundColor: "#4f46e5",
+    width: "100%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  createAccountButton: {
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#4f46e5",
+    marginTop: 10,
+  },
+  createAccountLabel: {
+    color: "#4f46e5",
+    fontWeight: "bold",
+  },
+});
 
 export default LoginPage;
