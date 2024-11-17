@@ -36,7 +36,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchName = async () => {
       const name = await getFriendlyNameFromStorage();
-      setFriendlyName(name ?? null);
+      setFriendlyName(name ?? '');
     };
     fetchName();
   }, []);
