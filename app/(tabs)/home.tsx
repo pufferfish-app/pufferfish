@@ -108,7 +108,7 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundImage: 'linear-gradient(180deg, rgba(177,192,214,1) 51%, rgba(255,244,225,1) 100%)',
+    backgroundColor: "lightgray",
     paddingBottom: 20,
   },
   card: {

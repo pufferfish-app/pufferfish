@@ -59,7 +59,7 @@ export default function TabLayout() {
           name="explore"
           options={{
             title: 'Explore',
-            tabBarIcon: ({ color }) => <IconSymbol size={48} name="chart.line" color={color} />, 
+            tabBarIcon: ({ color }) => <IconSymbol size={48} name="chart.pie" color={color} />, 
           }}
         />
         <Tabs.Screen
