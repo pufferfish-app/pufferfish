@@ -10,7 +10,7 @@ const LoginPage = () => {
   };
 
   const handleCreateAccount = () => {
-    console.log("Navigate to Create Account Page");
+    console.log("Create account");
     // TODO
   };
 
