@@ -1,15 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function PersonalPage() {
   const userName = "Ethan Gibbs"; 
+  const { setIsLogged } = useAuth();
+  const router = useRouter();
 
   const handleChangeBank = () => {
     // TODO
   };
 
   const handleLogout = () => {
-    // TODO
+    setIsLogged(false);
+    router.replace("/");
   };
 
   return (

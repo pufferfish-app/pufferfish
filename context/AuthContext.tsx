@@ -1,57 +1,59 @@
-// context/AuthContext.tsx
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthContextProps {
-  user: string | null;
-  login: (username: string, password: string) => Promise<void>;
-  signup: (username: string, password: string) => Promise<void>;
-  logout: () => void;
+  isLogged: boolean;
+  setIsLogged: (status: boolean) => Promise<void>;
+  loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-  user: null,
-  login: async () => {},
-  signup: async () => {},
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isLogged, setIsLoggedState] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const restoreAuthState = async () => {
+    try {
+      const storedStatus = await AsyncStorage.getItem("isLogged");
+      if (storedStatus === "true") {
+        setIsLoggedState(true);
+      }
+    } catch (error) {
+      console.error("Error restoring auth state:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Load user from AsyncStorage on app start
-    const loadUser = async () => {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    };
-    loadUser();
+    restoreAuthState();
   }, []);
 
-  const login = async (username: string, password: string) => {
-    // Replace this with real authentication logic
-    // For demonstration, accept any username/password
-    setUser(username);
-    await AsyncStorage.setItem('user', username);
-  };
-
-  const signup = async (username: string, password: string) => {
-    // Replace this with real signup logic
-    // For demonstration, accept any username/password
-    setUser(username);
-    await AsyncStorage.setItem('user', username);
-  };
-
-  const logout = async () => {
-    setUser(null);
-    await AsyncStorage.removeItem('user');
+  const setIsLogged = async (status: boolean) => {
+    try {
+      if (status) {
+        await AsyncStorage.setItem("isLogged", "true");
+      } else {
+        await AsyncStorage.removeItem("isLogged");
+      }
+      setIsLoggedState(status);
+    } catch (error) {
+      console.error("Error updating auth state:", error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider value={{ isLogged, setIsLogged, loading }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
