@@ -68,7 +68,7 @@ export default function HomePage() {
               {expandedId === item.id && (
                 <View style={styles.collapsible}>
                   <Text style={styles.collapsibleText}>
-                    This is placeholder text with additional details about the flagged transaction.
+                  We've detected a potentially suspicious transaction in your account. A large person-to-person (P2P) transfer of $100 was made to someone named Kevin using Zelle. What makes this transaction appear fraudulent is the large amount sent to an individual, which is a common tactic used by scammers to quickly move money out of an account. To remedy the situation, we recommend verifying the identity of Kevin and confirming that you intentionally sent this money. If you did not authorize this transaction, please contact your bank's customer support immediately to report the incident and request assistance in recovering the funds. Additionally, consider changing your account passwords and monitoring your account activity closely for any further suspicious transactions.
                   </Text>
                 </View>
               )}
